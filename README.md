@@ -60,4 +60,32 @@ context-common.xml 파일을 선택하고 오른쪽 마우스 클릭 후 Open Wi
 
 <bean> 설정에서 다음과 같이 스프링 설정을 추가한다. class 속성값에 패키지 경로가 포함된 경로를 지정해준다. 
 
+## 스프링 컨테이너 구동 및 테스트
+
+스프링 설정 파일을 작성한 후에 SampleServiceImpl 객체를 테스트하는 클라이언트를 만들어야한다.   
+src/test/java 소스 폴더에 SampleServiceClient.java 클래스 파일을 생성한다.      
+![image](https://user-images.githubusercontent.com/58906858/182079098-6ce1a326-deab-42e8-872b-ee1b874b11dc.png)
+
+SampleServiceClient.java
+```java
+package egovframework.example.sample.service;
+
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class SampleServiceClient {
+	public static void main(String[] args) throws Exception {
+		// 1. Spring 컨테이너를 구동한다.
+		AbstractApplicationContext container = new GenericXmlApplicationContext(
+				"egovframework/spring/context-common.xml");
+				
+	}
+}
+```
+
+이 자바 클라이언트가 가장 먼저 하는 일은 GenericXmlApplicationContext 객체(스프링 컨테이너)를 생성하는 것이다. 컨테이너가 생성될 때 스프링설정파일을 로딩할 수 있도록 생성자 인자로 넘겨주면 스프링 컨테이너를 구동할 수 있다.   
+클라이언트 프로그램을 저장하고 Ctrl + F11를 이용해서 자바 프로그램을 실행한다.   
+![image](https://user-images.githubusercontent.com/58906858/182079894-bc4f0ab7-8b17-4df0-86ef-0b46c4f42f50.png)
+실행결과를 보면 log4j2 관련 설정 파일이 없어서 문제가 발생하는데, log4j2는 스프링과 상관없으며 스프링 컨테이너가 출력하는 다양한 로그를 관리하기 위해 사용한다.
+
 
