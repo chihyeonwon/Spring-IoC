@@ -1,13 +1,19 @@
 package egovframework.sample.service.impl;
 
 public class SampleServiceImpl {
+	private String name;
 	
 	public SampleServiceImpl() throws Exception {
 		System.out.println("===> SampleServiceImpl 생성");
 	}
 	
+	public void initMethod() {
+		System.out.println("---> initMethod() 호출");
+		name = "샘플 서비스 객체";
+	}
+	
 	public void insertSample() throws Exception {
-		System.out.println("SampleService---Sample 등록");
+		System.out.println(name + "---Sample 등록");
 	}
 	
 	public void updateSample() throws Exception {
@@ -23,6 +29,6 @@ public class SampleServiceImpl {
 	}
 	
 	public void selectSampleList() throws Exception {
-		System.out.println("SampleService---Sample 목록 검색");
+		System.out.println(name + "---Sample 목록 검색");
 	}
 }
