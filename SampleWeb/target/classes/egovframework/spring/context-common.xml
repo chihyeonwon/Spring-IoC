@@ -5,6 +5,6 @@
 
 <bean id="sampleService"
 	class="egovframework.sample.service.impl.SampleServiceImpl"
-	init-method="initMethod"></bean>
+	init-method="initMethod" destroy-method="destroyMethod"></bean>
 
 </beans>

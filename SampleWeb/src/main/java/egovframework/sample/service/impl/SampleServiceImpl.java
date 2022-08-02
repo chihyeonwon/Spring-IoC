@@ -12,6 +12,11 @@ public class SampleServiceImpl {
 		name = "샘플 서비스 객체";
 	}
 	
+	public void destroyMethod() {
+		System.out.println("---> destroyMethod() 호출");
+		name = null;
+	}
+	
 	public void insertSample() throws Exception {
 		System.out.println(name + "---Sample 등록");
 	}
