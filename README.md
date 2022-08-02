@@ -182,4 +182,143 @@ SampleService---Sample 목록 검색
 3. 클라이언트가 getBean() 메소드로 아이디가 sampleService인 객체를 검색한다.
 4. 컨테이너는 SampleServiceImpl 객체를 검색하여 리턴한다.
 
+## 스프링 설정 파일
+
+스프링 설정파일은 스프링 컨테이너의 동작에 영향을 미치는 매우 중요한 파일이며, 이 XML 설정을 통해 다양한 요청을 컨테이너에게 지시할 수 있다.   
+STS를 이용해서 만든 스프링 설정 파일에는 beans 네임스페이스가 기본 네임스페이스로 선언되어있으며 bean, description, alias, import 등 네 개의 엘리먼트를 자식으로 사용할 수 있는데 이 중에서 bean 엘리먼트만 정확하게 이해하면 되며 나머지는 사용할 일이 거의 없음으로 무시해도 된다.   
+
+## <bean> 엘리먼트 속성
+
+bean 엘리먼트는 id와 class 속성 외에도 여러 속성을 사용할 수 있지만 일반적으로 많이 사용하는 몇 가지 속성을 확인해본다.
+
+1. init-method 속성
+
+스프링 컨테이너는 스프링 설정 파일에 등록된 클래스의 객체를 생성할 때 기본적으로 디폴트 생성자를 호출한다.   
+SampleServiceImpl 클래스에 멤버변수와 멤버변수를 초기화할 메소드를 추가한다.   
+
+SampleServiceImpl 
+```java
+package egovframework.sample.service.impl;
+
+public class SampleServiceImpl {
+	private String name;
+	
+	public SampleServiceImpl() throws Exception {
+		System.out.println("===> SampleServiceImpl 생성");
+	}
+	
+	public void initMethod() {
+		System.out.println("---> initMethod() 호출");
+		name = "샘플 서비스 객체";
+	}
+	
+	public void insertSample() throws Exception {
+		System.out.println(name + "---Sample 등록");
+	}
+	
+	public void updateSample() throws Exception {
+		System.out.println("SampleService---Sample 수정");
+	}
+	
+	public void deleteSample() throws Exception {
+		System.out.println("SampleService---Sample 삭제");
+	}
+	
+	public void selectSample() throws Exception {
+		System.out.println("SampleService---Sample 상세 조회");
+	}
+	
+	public void selectSampleList() throws Exception {
+		System.out.println(name + "---Sample 목록 검색");
+	}
+}
+```
+
+이제 스프링 설정 파일에 init-method 속성을 추가한다.   
+context-common.xml
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="sampleService"
+	class="egovframework.sample.service.impl.SampleServiceImpl"
+	init-method="initMethod"></bean>
+
+</beans>
+```
+
+앞서 작성한 SampleServiceClient 프로그램을 다시 실행하면 다음과 같은 결과 화면을 볼 수 있다.   
+![image](https://user-images.githubusercontent.com/58906858/182286225-4c6ce311-3dce-47a6-903b-f2fc169ffd73.png)
+
+2. destroy-method 속성
+
+init-method를 객체의 초기화를 위해 사용한다면 destroy-method는 객체가 삭제되기 전에 수행될 작업을 처리하기 위해 사용한다.   
+destroy-method 속성을 테스트하기 위해서 SampleServiceImpl 클래스에 destroyMethod()메소드를 추가한다.   
+
+SampleServiceImpl
+```java
+package egovframework.sample.service.impl;
+
+public class SampleServiceImpl {
+	private String name;
+	
+	public SampleServiceImpl() throws Exception {
+		System.out.println("===> SampleServiceImpl 생성");
+	}
+	
+	public void initMethod() {
+		System.out.println("---> initMethod() 호출");
+		name = "샘플 서비스 객체";
+	}
+	
+	public void destroyMethod() {
+		System.out.println("---> destroyMethod() 호출");
+		name = null;
+	}
+	
+	public void insertSample() throws Exception {
+		System.out.println(name + "---Sample 등록");
+	}
+	
+	public void updateSample() throws Exception {
+		System.out.println("SampleService---Sample 수정");
+	}
+	
+	public void deleteSample() throws Exception {
+		System.out.println("SampleService---Sample 삭제");
+	}
+	
+	public void selectSample() throws Exception {
+		System.out.println("SampleService---Sample 상세 조회");
+	}
+	
+	public void selectSampleList() throws Exception {
+		System.out.println(name + "---Sample 목록 검색");
+	}
+}
+```
+
+스프링 설정 파일에 destroy-method 속성을 추가한다.   
+
+context-common.xml
+```java
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<bean id="sampleService"
+	class="egovframework.sample.service.impl.SampleServiceImpl"
+	init-method="initMethod" destroy-method="destroyMethod"></bean>
+
+</beans>
+```
+
+SampleServiceClient 프로그램을 다시 실행해서 실행결과를 확인해본다.   
+![image](https://user-images.githubusercontent.com/58906858/182286983-8f6f0d73-437f-45f1-b69d-e557d3e304f2.png)
+
+스프링 컨테이너는 close() 메소드를 통해 종료할 수 있는데, 컨테이너가 종료되기 직전에 컨테이너는 자신이 관리하는 모든 객체를 삭제한다.   
+이때 삭제되는 객체의 destroyMethod() 메소드가 호출되는 것이다.
 
