@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 <bean id="sampleService"
-	class="egovframework.sample.service.impl.SampleServiceImpl"></bean>
+	class="egovframework.sample.service.impl.SampleServiceImpl"
+	init-method="initMethod"></bean>
 
 </beans>
